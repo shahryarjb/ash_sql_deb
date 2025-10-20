@@ -104,7 +104,11 @@ defmodule AshSqlDeb.MishkaBlog.AutoPosting do
     only_when_changed?(true)
     relationship_opts(public?: true)
 
-    mixin({AshSqlDeb.Mixins.AutoPostingPaperTrailMixin , :postgres, []})
+    mixin({AshSqlDeb.Mixins.AutoPostingPaperTrailMixin, :postgres, []})
+  end
+
+  json_api do
+    type "auto_posting"
   end
 
   actions do

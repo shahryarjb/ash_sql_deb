@@ -1,0 +1,237 @@
+{
+  "attributes": [
+    {
+      "allow_nil?": false,
+      "default": "fragment(\"gen_random_uuid()\")",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": true,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "id",
+      "type": "uuid"
+    },
+    {
+      "allow_nil?": false,
+      "default": "nil",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "name",
+      "type": "text"
+    },
+    {
+      "allow_nil?": false,
+      "default": "nil",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "host",
+      "type": "text"
+    },
+    {
+      "allow_nil?": true,
+      "default": "0",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "priority",
+      "type": "bigint"
+    },
+    {
+      "allow_nil?": true,
+      "default": "true",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "active",
+      "type": "boolean"
+    },
+    {
+      "allow_nil?": true,
+      "default": "\"hybrid\"",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "mode",
+      "type": "text"
+    },
+    {
+      "allow_nil?": true,
+      "default": "nil",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "frontend_domain",
+      "type": "text"
+    },
+    {
+      "allow_nil?": true,
+      "default": "[]",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "allowed_origins",
+      "type": [
+        "array",
+        "text"
+      ]
+    },
+    {
+      "allow_nil?": true,
+      "default": "false",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "master",
+      "type": "boolean"
+    },
+    {
+      "allow_nil?": false,
+      "default": "fragment(\"(now() AT TIME ZONE 'utc')\")",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "inserted_at",
+      "type": "utc_datetime_usec"
+    },
+    {
+      "allow_nil?": false,
+      "default": "fragment(\"(now() AT TIME ZONE 'utc')\")",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "updated_at",
+      "type": "utc_datetime_usec"
+    },
+    {
+      "allow_nil?": true,
+      "default": "nil",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "archived_at",
+      "type": "utc_datetime_usec"
+    }
+  ],
+  "base_filter": "(archived_at IS NULL)",
+  "check_constraints": [
+    {
+      "attribute": [
+        "name"
+      ],
+      "base_filter": "(archived_at IS NULL)",
+      "check": "length(name) >= 3 AND length(name) <= 70",
+      "name": "name_length_check"
+    },
+    {
+      "attribute": [
+        "host"
+      ],
+      "base_filter": "(archived_at IS NULL)",
+      "check": "length(host) >= 3 AND length(host) <= 200",
+      "name": "host_length_check"
+    },
+    {
+      "attribute": [
+        "priority"
+      ],
+      "base_filter": "(archived_at IS NULL)",
+      "check": "priority >= 0 AND priority <= 100",
+      "name": "priority_range_check"
+    },
+    {
+      "attribute": [
+        "mode"
+      ],
+      "base_filter": "(archived_at IS NULL)",
+      "check": "mode IN ('api_only', 'phoenix_only', 'hybrid')",
+      "name": "mode_values_check"
+    },
+    {
+      "attribute": [
+        "name",
+        "host"
+      ],
+      "base_filter": "(archived_at IS NULL)",
+      "check": "name != '' AND host != ''",
+      "name": "no_empty_strings"
+    }
+  ],
+  "custom_indexes": [],
+  "custom_statements": [],
+  "has_create_action": true,
+  "hash": "48579134168606A55FB6ADBBB845EADCA8704A777A9303A0914FD5B30DFCD488",
+  "identities": [
+    {
+      "all_tenants?": false,
+      "base_filter": "(archived_at IS NULL)",
+      "index_name": "sites_unique_host_index",
+      "keys": [
+        {
+          "type": "atom",
+          "value": "host"
+        }
+      ],
+      "name": "unique_host",
+      "nils_distinct?": true,
+      "where": null
+    },
+    {
+      "all_tenants?": false,
+      "base_filter": "(archived_at IS NULL)",
+      "index_name": "sites_unique_name_index",
+      "keys": [
+        {
+          "type": "atom",
+          "value": "name"
+        }
+      ],
+      "name": "unique_name",
+      "nils_distinct?": true,
+      "where": null
+    }
+  ],
+  "multitenancy": {
+    "attribute": null,
+    "global": null,
+    "strategy": null
+  },
+  "repo": "Elixir.AshSqlDeb.Repo",
+  "schema": null,
+  "table": "sites"
+}

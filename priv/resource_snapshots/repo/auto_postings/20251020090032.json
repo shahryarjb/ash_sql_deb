@@ -1,0 +1,257 @@
+{
+  "attributes": [
+    {
+      "allow_nil?": false,
+      "default": "fragment(\"gen_random_uuid()\")",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": true,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "id",
+      "type": "uuid"
+    },
+    {
+      "allow_nil?": false,
+      "default": "nil",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "name",
+      "type": "text"
+    },
+    {
+      "allow_nil?": false,
+      "default": "nil",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "plugin",
+      "type": "text"
+    },
+    {
+      "allow_nil?": true,
+      "default": "nil",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "description",
+      "type": "text"
+    },
+    {
+      "allow_nil?": true,
+      "default": "false",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "is_active",
+      "type": "boolean"
+    },
+    {
+      "allow_nil?": true,
+      "default": "%{}",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "config",
+      "type": "map"
+    },
+    {
+      "allow_nil?": false,
+      "default": "fragment(\"(now() AT TIME ZONE 'utc')\")",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "inserted_at",
+      "type": "utc_datetime_usec"
+    },
+    {
+      "allow_nil?": false,
+      "default": "fragment(\"(now() AT TIME ZONE 'utc')\")",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "updated_at",
+      "type": "utc_datetime_usec"
+    },
+    {
+      "allow_nil?": true,
+      "default": "nil",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "archived_at",
+      "type": "utc_datetime_usec"
+    },
+    {
+      "allow_nil?": false,
+      "default": "nil",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": {
+        "deferrable": false,
+        "destination_attribute": "id",
+        "destination_attribute_default": null,
+        "destination_attribute_generated": null,
+        "index?": false,
+        "match_type": null,
+        "match_with": null,
+        "multitenancy": {
+          "attribute": null,
+          "global": null,
+          "strategy": null
+        },
+        "name": "auto_postings_site_id_fkey",
+        "on_delete": null,
+        "on_update": null,
+        "primary_key?": true,
+        "schema": "public",
+        "table": "sites"
+      },
+      "scale": null,
+      "size": null,
+      "source": "site_id",
+      "type": "uuid"
+    }
+  ],
+  "base_filter": "(archived_at IS NULL)",
+  "check_constraints": [
+    {
+      "attribute": [
+        "name"
+      ],
+      "base_filter": "(archived_at IS NULL)",
+      "check": "length(name) >= 1 AND length(name) <= 255",
+      "name": "name_length"
+    },
+    {
+      "attribute": [
+        "plugin"
+      ],
+      "base_filter": "(archived_at IS NULL)",
+      "check": "length(plugin) >= 1 AND length(plugin) <= 255",
+      "name": "plugin_length"
+    }
+  ],
+  "custom_indexes": [
+    {
+      "all_tenants?": false,
+      "concurrently": false,
+      "error_fields": [
+        "plugin",
+        "site_id"
+      ],
+      "fields": [
+        {
+          "type": "atom",
+          "value": "plugin"
+        },
+        {
+          "type": "atom",
+          "value": "site_id"
+        }
+      ],
+      "include": null,
+      "message": null,
+      "name": null,
+      "nulls_distinct": true,
+      "prefix": null,
+      "table": null,
+      "unique": true,
+      "using": null,
+      "where": null
+    },
+    {
+      "all_tenants?": false,
+      "concurrently": false,
+      "error_fields": [
+        "is_active"
+      ],
+      "fields": [
+        {
+          "type": "atom",
+          "value": "is_active"
+        }
+      ],
+      "include": null,
+      "message": null,
+      "name": null,
+      "nulls_distinct": true,
+      "prefix": null,
+      "table": null,
+      "unique": false,
+      "using": null,
+      "where": null
+    }
+  ],
+  "custom_statements": [
+    {
+      "code?": false,
+      "down": "DROP FUNCTION IF EXISTS prevent_archived_auto_posting_updates();",
+      "name": "prevent_archived_auto_posting_updates_function",
+      "up": "CREATE OR REPLACE FUNCTION prevent_archived_auto_posting_updates()\nRETURNS TRIGGER AS $$\nBEGIN\n  -- Allow unarchiving (archived_at: NOT NULL -> NULL)\n  IF OLD.archived_at IS NOT NULL AND NEW.archived_at IS NULL THEN\n    RETURN NEW;\n  END IF;\n\n  -- Prevent other updates on archived records\n  IF OLD.archived_at IS NOT NULL THEN\n    RAISE EXCEPTION 'Cannot update archived auto-posting configuration'\n      USING ERRCODE = 'check_violation';\n  END IF;\n\n  RETURN NEW;\nEND;\n$$ LANGUAGE plpgsql;\n"
+    },
+    {
+      "code?": false,
+      "down": "DROP TRIGGER IF EXISTS prevent_archived_auto_posting_updates_trigger ON mishka_blog_auto_postings;",
+      "name": "prevent_archived_auto_posting_updates_trigger",
+      "up": "CREATE TRIGGER prevent_archived_auto_posting_updates_trigger\n  BEFORE UPDATE ON mishka_blog_auto_postings\n  FOR EACH ROW\n  EXECUTE FUNCTION prevent_archived_auto_posting_updates();\n"
+    }
+  ],
+  "has_create_action": true,
+  "hash": "0074D278DA1C97886261174DCE05E05EA8B7CA6CF1FB4B0B917998404E723604",
+  "identities": [
+    {
+      "all_tenants?": true,
+      "base_filter": "(archived_at IS NULL)",
+      "index_name": "auto_postings_unique_plugin_per_site_index",
+      "keys": [
+        {
+          "type": "atom",
+          "value": "plugin"
+        },
+        {
+          "type": "atom",
+          "value": "site_id"
+        }
+      ],
+      "name": "unique_plugin_per_site",
+      "nils_distinct?": false,
+      "where": null
+    }
+  ],
+  "multitenancy": {
+    "attribute": "site_id",
+    "global": false,
+    "strategy": "attribute"
+  },
+  "repo": "Elixir.AshSqlDeb.Repo",
+  "schema": null,
+  "table": "auto_postings"
+}

@@ -3,7 +3,7 @@ defmodule AshSqlDeb.Mixins.AutoPostingPaperTrailMixin do
     quote do
       postgres do
         table "auto_posting_versions"
-        repo MishkaCms.Repo
+        repo AshSqlDeb.Repo
 
         references do
           reference :version_source, on_delete: :delete
