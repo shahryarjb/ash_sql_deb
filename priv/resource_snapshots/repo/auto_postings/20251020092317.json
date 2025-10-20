@@ -219,13 +219,13 @@
     },
     {
       "code?": false,
-      "down": "DROP TRIGGER IF EXISTS prevent_archived_auto_posting_updates_trigger ON mishka_blog_auto_postings;",
+      "down": "DROP TRIGGER IF EXISTS prevent_archived_auto_posting_updates_trigger ON auto_postings;",
       "name": "prevent_archived_auto_posting_updates_trigger",
-      "up": "CREATE TRIGGER prevent_archived_auto_posting_updates_trigger\n  BEFORE UPDATE ON mishka_blog_auto_postings\n  FOR EACH ROW\n  EXECUTE FUNCTION prevent_archived_auto_posting_updates();\n"
+      "up": "CREATE TRIGGER prevent_archived_auto_posting_updates_trigger\n  BEFORE UPDATE ON auto_postings\n  FOR EACH ROW\n  EXECUTE FUNCTION prevent_archived_auto_posting_updates();\n"
     }
   ],
   "has_create_action": true,
-  "hash": "0074D278DA1C97886261174DCE05E05EA8B7CA6CF1FB4B0B917998404E723604",
+  "hash": "67D2F077D870726B3B791AC5637A4A1815EB78558029CD2AC10918E0C203C39B",
   "identities": [
     {
       "all_tenants?": true,

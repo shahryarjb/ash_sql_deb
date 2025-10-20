@@ -143,7 +143,7 @@ defmodule AshSqlDeb.Repo.Migrations.MishkaBlog do
 
     execute("""
     CREATE TRIGGER prevent_archived_auto_posting_updates_trigger
-      BEFORE UPDATE ON mishka_blog_auto_postings
+      BEFORE UPDATE ON auto_postings
       FOR EACH ROW
       EXECUTE FUNCTION prevent_archived_auto_posting_updates();
     """)
@@ -191,7 +191,7 @@ defmodule AshSqlDeb.Repo.Migrations.MishkaBlog do
     drop_if_exists constraint(:sites, :name_length_check)
 
     execute("""
-    DROP TRIGGER IF EXISTS prevent_archived_auto_posting_updates_trigger ON mishka_blog_auto_postings;
+    DROP TRIGGER IF EXISTS prevent_archived_auto_posting_updates_trigger ON auto_postings;
     """)
 
     execute("""

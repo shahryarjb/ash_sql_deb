@@ -68,12 +68,12 @@ defmodule AshSqlDeb.MishkaBlog.AutoPosting do
       statement :prevent_archived_auto_posting_updates_trigger do
         up """
         CREATE TRIGGER prevent_archived_auto_posting_updates_trigger
-          BEFORE UPDATE ON mishka_blog_auto_postings
+          BEFORE UPDATE ON auto_postings
           FOR EACH ROW
           EXECUTE FUNCTION prevent_archived_auto_posting_updates();
         """
 
-        down "DROP TRIGGER IF EXISTS prevent_archived_auto_posting_updates_trigger ON mishka_blog_auto_postings;"
+        down "DROP TRIGGER IF EXISTS prevent_archived_auto_posting_updates_trigger ON auto_postings;"
       end
     end
   end

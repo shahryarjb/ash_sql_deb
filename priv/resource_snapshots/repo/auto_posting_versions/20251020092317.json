@@ -133,7 +133,7 @@
   "custom_indexes": [],
   "custom_statements": [],
   "has_create_action": true,
-  "hash": "0E60152BC5B60DD82464FA3D352FA9CF368D6FE6AF8AD146347E090754908FB7",
+  "hash": "426FB08B2526F384B257D257879261CB15DEC6F20F927713A622BDC1B818BDC6",
   "identities": [],
   "multitenancy": {
     "attribute": "site_id",
